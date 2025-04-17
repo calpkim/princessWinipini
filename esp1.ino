@@ -1,6 +1,6 @@
 // /workspaces/princessWinipini/esp1.ino
 // princessWinipini Boat Project
-// Created by calpkim & Uncles
+// Created by calpkim & TitoSpike
 // ©2025
 void setup() {
 }
