@@ -9,8 +9,7 @@
   Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files.  
   The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
-#include <WiFi.h>
-#include <esp_wifi.h>
+#include <ESP8266WiFi.h>
 
 void readMacAddress(){
   uint8_t baseMac[6];
