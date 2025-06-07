@@ -1,4 +1,4 @@
-// /workspaces/princessWinipini/esp1.ino
+// /workspaces/princessWinipini/.ino/template.ino
 // princessWinipini Boat Project
 // Created by calpkim & TitoSpike
 // ©2025
