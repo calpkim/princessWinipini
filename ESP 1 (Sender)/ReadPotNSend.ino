@@ -4,11 +4,30 @@
 // ©2025
 
 //Chat GPT
+
+    const int switchPin = 2; // Example digital pin
+
+    void setup() {
+      pinMode(switchPin, INPUT);
+    }
+
+    void loop() {
+      int switchState = digitalRead(switchPin);
+      if (switchState == LOW) {
+        // Switch is closed (on)
+        // Do something when switch is on
+      } else {
+        // Switch is open (off)
+        // Do something when switch is off
+      }
+    }
+
 #include <ESP8266WiFi.h>
 #include <espnow.h>
 
 uint8_t receiverMAC[] = {48:3F:DA:5E:6E:A2};  // replace with actual MAC
 
+const int 
 typedef struct struct_message {
   int potValue;
 } struct_message;
@@ -25,6 +44,8 @@ void setup() {
   }
 
   esp_now_set_self_role(ESP_NOW_ROLE_CONTROLLER);
+  pinMode(switchPin, INPUT);
+
 }
 
 void loop() {
