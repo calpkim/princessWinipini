@@ -1,0 +1,4 @@
+ESP8266 NodeMCU with DC Motor and L298N Motor Driver – Control Speed and Direction (Arduino IDE)
+  https://randomnerdtutorials.com/esp8266-nodemcu-dc-motor-l298n-motor-driver-control-speed-direction
+Get ESP32/ESP8266 MAC Address and Change It (Arduino IDE)
+  https://randomnerdtutorials.com/get-change-esp32-esp8266-mac-address-arduino/
