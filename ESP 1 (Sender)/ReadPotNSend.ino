@@ -4,7 +4,7 @@
 // ©2025
 
 //Chat GPT
-
+/*
     const int switchPin = 2; // Example digital pin
 
     void setup() {
@@ -21,7 +21,7 @@
         // Do something when switch is off
       }
     }
-
+*/
 #include <ESP8266WiFi.h>
 #include <espnow.h>
 
@@ -44,6 +44,9 @@ void setup() {
   }
 
   esp_now_set_self_role(ESP_NOW_ROLE_CONTROLLER);
+  
+  esp_now_add_peer(receiverMAC, ESP_NOW_ROLE_SLAVE, 1, NULL, 0); 
+  
   pinMode(switchPin, INPUT);
 
 }
@@ -52,7 +55,6 @@ void loop() {
   int potVal = analogRead(A0);  // 0–1023
   dataToSend.potValue = potVal;
 
-  esp_now_add_peer(receiverMAC, ESP_NOW_ROLE_SLAVE, 1, NULL, 0);
-  esp_now_send(, (uint8_t *) &dataToSend, sizeof(dataToSend));
+  esp_now_send(receiverMAC, (uint8_t *) &dataToSend, sizeof(dataToSend));
   delay(200);  // send every 200ms
 }
