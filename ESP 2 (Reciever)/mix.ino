@@ -10,9 +10,14 @@
 #include <espnow.h>
 
 // Motor A
-int motor1Pin1 = 12; 
-int motor1Pin2 = 14; 
-int enable1Pin = 13; 
+int motor1Pin1 = 16; //D0, ENA
+int motor1Pin2 = 5;  //D1, In1
+int enable1Pin = 4;  //D2, IN2
+
+// Motor B
+int motor2Pin1 = 0; //D3, IN3
+int motor2Pin2 = 13; //D7, IN4
+int motor2Pin3 = 15; //D8, ENA
 
 // Setting minimum duty cycle
 int dutyCycle = 60;
