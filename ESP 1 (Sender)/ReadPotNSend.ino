@@ -25,11 +25,11 @@
 #include <ESP8266WiFi.h>
 #include <espnow.h>
 
-uint8_t receiverMAC[] = {48:3F:DA:5E:6E:A2};  // replace with actual MAC
+uint8_t receiverMAC[] = {0x48, 0x3F, 0xDA, 0x5E, 0x6E, 0xA2};
 
-const int 
 typedef struct struct_message {
-  int potValue;
+  int potValue1;
+  int potValue2;
 } struct_message;
 
 struct_message dataToSend;
@@ -46,14 +46,11 @@ void setup() {
   esp_now_set_self_role(ESP_NOW_ROLE_CONTROLLER);
   
   esp_now_add_peer(receiverMAC, ESP_NOW_ROLE_SLAVE, 1, NULL, 0); 
-  
-  pinMode(switchPin, INPUT);
-
 }
 
 void loop() {
-  int potVal = analogRead(A0);  // 0–1023
-  dataToSend.potValue = potVal;
+  dataToSend.potValue1 = analogRead(A0); // Throttle pot on A0
+  //dataToSend.potValue2 = analogRead(A1); // Steering pot on A1 (example pin)
 
   esp_now_send(receiverMAC, (uint8_t *) &dataToSend, sizeof(dataToSend));
   delay(200);  // send every 200ms
