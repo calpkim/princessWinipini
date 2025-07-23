@@ -36,6 +36,8 @@ struct_message dataToSend;
 
 const int throttleGND = D1;  // Used to ground throttle pot
 const int steeringGND = D2;  // Used to ground steering pot
+const int steeringVCC = D3; // Used to provide VCC to steering pot
+const int throttleVCC = D0; // Used to provide VCC to throttle pot
 
 void setup() {
   Serial.begin(115200);
@@ -44,11 +46,14 @@ void setup() {
 
   pinMode(throttleGND, OUTPUT);
   pinMode(steeringGND, OUTPUT);
+  pinMode(steeringVCC, INPUT);
+  pinMode(throttleVCC, INPUT);
 
 
   digitalWrite(throttleGND, HIGH); // Start off not grounded
   digitalWrite(steeringGND, HIGH); // Start off not grounded
-
+  digitalWrite(steeringVCC, LOW); // Start off not powered
+  digitalWrite(throttleVCC, LOW); // Start off not powered
   if (esp_now_init() != 0) {
     Serial.println("ESP-NOW init failed");
     return;
@@ -65,17 +70,29 @@ void setup() {
 void loop() {
   // === Read Throttle ===
   digitalWrite(steeringGND, HIGH);   // Make sure steering is disconnected
+  pinMode(steeringVCC, INPUT);  // Ensure steering VCC is off
   digitalWrite(throttleGND, LOW);    // Ground throttle
-  delay(10);                         // Wait for voltage to stabilize
+  pinMode(throttleVCC, OUTPUT);   // Provide VCC to throttle
+  delay(100);                         // Wait for voltage to stabilize
   dataToSend.potValue1 = analogRead(A0);
   digitalWrite(throttleGND, HIGH);   // Disconnect again
+  pinMode(throttleVCC, INPUT);  // Turn off throttle VCC
 
   // === Read Steering ===
   digitalWrite(throttleGND, HIGH);   // Ensure throttle is disconnected
+  pinMode(throttleVCC, INPUT);  // Ensure throttle VCC is off
   digitalWrite(steeringGND, LOW);    // Ground steering
-  delay(10);                         // Wait for voltage to stabilize
+  pinMode(steeringVCC, OUTPUT);   // Provide VCC to steering
+  delay(100);                         // Wait for voltage to stabilize
   dataToSend.potValue2 = analogRead(A0);
   digitalWrite(steeringGND, HIGH);   // Disconnect again
+  pinMode(steeringVCC, INPUT);  // Turn off steering VCC
+
+    // === Print Data ===
+  Serial.print("potValue1 = ");
+  Serial.print(dataToSend.potValue1);
+  Serial.print(" | potValue2 = ");
+  Serial.println(dataToSend.potValue2);
 
   // === Send Data ===
   esp_now_send(receiverMAC, (uint8_t *) &dataToSend, sizeof(dataToSend));
