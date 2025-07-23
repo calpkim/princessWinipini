@@ -10,17 +10,17 @@
 #include <espnow.h>
 
 // Motor A
-int motor1Pin1 = 16; //D0, ENA
-int motor1Pin2 = 5;  //D1, In1
-int enable1Pin = 4;  //D2, IN2
+int ENA1 = D0; // 16;
+int IN1 = D1; // 5;
+int IN2 = D2; // 4;
 
 // Motor B
-int motor2Pin1 = 0; //D3, IN3
-int motor2Pin2 = 13; //D7, IN4
-int motor2Pin3 = 15; //D8, ENA
+int IN3 = D3; //0;
+int IN4 = D7; //13;
+int ENA2 = D8; //15;
 
 // Setting minimum duty cycle
-int dutyCycle = 60;
+int dutyCycle = 0;
 
 // 
 typedef struct struct_message {
@@ -40,9 +40,12 @@ void OnDataRecv(uint8_t *mac, uint8_t *incomingDataBytes, uint8_t len) {
 
 void setup() {
   Serial.begin(115200);
-  pinMode(ENA, OUTPUT);
+  pinMode(ENA1, OUTPUT);
   pinMode(IN1, OUTPUT);
   pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+  pinMode(ENA2, OUTPUT);
   analogWriteRange(100);
 
   WiFi.mode(WIFI_STA);
