@@ -69,7 +69,7 @@ void setup() {
 
 void loop() {
   // === Read Throttle ===
-  digitalWrite(steeringGND, HIGH);   // Make sure steering is disconnected
+  pinMode(steeringGND, INPUT);   // Make sure steering is disconnected
   pinMode(steeringVCC, INPUT);  // Ensure steering VCC is off
   digitalWrite(throttleGND, LOW);    // Ground throttle
   pinMode(throttleVCC, OUTPUT);   // Provide VCC to throttle
