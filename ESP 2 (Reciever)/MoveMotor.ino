@@ -10,9 +10,9 @@
 *********/
 
 // Motor A
-int motor1Pin1 = 12; 
-int motor1Pin2 = 14; 
-int enable1Pin = 13; 
+const int ENA = D12;
+const int IN1 = D14;
+const int IN2 = D13; 
 
 // Setting minimum duty cycle
 int dutyCycle = 60;
