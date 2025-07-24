@@ -6,7 +6,7 @@
 // create an instance of the stepper class, specifying
 // the number of steps of the motor and the pins it's
 // attached to
-Stepper stepper(STEPS, 2, 3);
+Stepper stepper(STEPS, 2, 3);git s
 
 // the previous reading from the analog input
 int previous = 0;
