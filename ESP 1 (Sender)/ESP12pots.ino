@@ -25,7 +25,7 @@
 #include <ESP8266WiFi.h>
 #include <espnow.h>
 
-uint8_t receiverMAC[] = {0x48, 0x3F, 0xDA, 0x5E, 0x6E, 0xA2};
+uint8_t receiverMAC[] = {0x48, 0x3F, 0xDA, 0x57, 0x55, 0x5B};
 
 typedef struct struct_message {
   int potValue1;
@@ -44,16 +44,11 @@ void setup() {
   WiFi.mode(WIFI_STA);  // ESP-NOW requires station mode
   WiFi.disconnect();    // ensure no connection to router
 
-  pinMode(throttleGND, OUTPUT);
-  pinMode(steeringGND, OUTPUT);
+  pinMode(throttleGND, INPUT);
+  pinMode(steeringGND, INPUT);
   pinMode(steeringVCC, INPUT);
   pinMode(throttleVCC, INPUT);
 
-
-  digitalWrite(throttleGND, HIGH); // Start off not grounded
-  digitalWrite(steeringGND, HIGH); // Start off not grounded
-  digitalWrite(steeringVCC, LOW); // Start off not powered
-  digitalWrite(throttleVCC, LOW); // Start off not powered
   if (esp_now_init() != 0) {
     Serial.println("ESP-NOW init failed");
     return;
@@ -69,24 +64,36 @@ void setup() {
 
 void loop() {
   // === Read Throttle ===
-  digitalWrite(steeringGND, HIGH);   // Make sure steering is disconnected
+  // TURN OFF STEERING
+  pinMode(steeringGND, INPUT);   // Make sure steering is disconnected
   pinMode(steeringVCC, INPUT);  // Ensure steering VCC is off
+  // TURN ON THROTTLE
+  pinMode(throttleGND, OUTPUT);  // Set throttle GND to output
+  pinMode(throttleVCC, OUTPUT);  // Turn on throttle VCC
   digitalWrite(throttleGND, LOW);    // Ground throttle
-  pinMode(throttleVCC, OUTPUT);   // Provide VCC to throttle
-  delay(100);                         // Wait for voltage to stabilize
+  digitalWrite(throttleVCC, HIGH);   // Turn on Power for throttle
+  delay(50);                         // Wait for voltage to stabilize
+  // READ THROTTLE
   dataToSend.potValue1 = analogRead(A0);
-  digitalWrite(throttleGND, HIGH);   // Disconnect again
+  //TURN OFF THROTTLE
+  pinMode(throttleVCC, INPUT);  // Turn off throttle VCC
   pinMode(throttleVCC, INPUT);  // Turn off throttle VCC
 
   // === Read Steering ===
-  digitalWrite(throttleGND, HIGH);   // Ensure throttle is disconnected
+  // TURN OFF THROTTLE
+  pinMode(throttleGND, INPUT);   // Make sure throttle is disconnected
   pinMode(throttleVCC, INPUT);  // Ensure throttle VCC is off
+  // TURN ON STEERING
+  pinMode(steeringGND, OUTPUT);  // Set steering GND to output
+  pinMode(steeringVCC, OUTPUT);  // Turn on steering VCC
   digitalWrite(steeringGND, LOW);    // Ground steering
-  pinMode(steeringVCC, OUTPUT);   // Provide VCC to steering
-  delay(100);                         // Wait for voltage to stabilize
+  digitalWrite(steeringVCC, HIGH);   // Turn on Power for steering
+  delay(50);                         // Wait for voltage to stabilize
+  // READ STEERING
   dataToSend.potValue2 = analogRead(A0);
-  digitalWrite(steeringGND, HIGH);   // Disconnect again
-  pinMode(steeringVCC, INPUT);  // Turn off steering VCC
+  //TURN OFF STEERING
+  pinMode(steeringGND, INPUT);   // Make sure steering is disconnected
+  pinMode(steeringVCC, INPUT);  // Ensure steering VCC is off
 
     // === Print Data ===
   Serial.print("potValue1 = ");

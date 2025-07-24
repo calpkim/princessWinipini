@@ -9,7 +9,6 @@
 #include <ESP8266WiFi.h>
 #include <espnow.h>
 
-
 // Motor A
 int ENA1 = D0; // 16;
 int IN1 = D1; // 5;
@@ -34,13 +33,8 @@ struct_message incomingData;
 
 void OnDataRecv(uint8_t *mac, uint8_t *incomingDataBytes, uint8_t len) {
   memcpy(&incomingData, incomingDataBytes, sizeof(incomingData));
-  int potValue1 = incomingData.potValue2;
-  int potValue2 = incomingData.potValue1;
-
-  Serial.print("Received potValue1 (Throttle): ");
-  Serial.print(potValue1);
-  Serial.print(" | potValue2 (Steering): ");
-  Serial.println(potValue2);
+  int potValue1 = incomingData.potValue1;
+  int potValue2 = incomingData.potValue2;
 
   int speedThrottle = 0;
   int speedSteering = 0;
@@ -48,11 +42,12 @@ void OnDataRecv(uint8_t *mac, uint8_t *incomingDataBytes, uint8_t len) {
   if (potValue1 <= 307) {
     // REVERSE: Scale 0–307 to 0–30
     speedThrottle = map(potValue1, 0, 307, 0, 30);
-
     // Motor B Reverse
     digitalWrite(IN3, LOW);
     digitalWrite(IN4, HIGH);
     analogWrite(ENA2, speedThrottle);
+    
+
   } else if (potValue1 >= 308) {
     // FORWARD: Scale 308–1023 to 0–100
     speedThrottle = map(potValue1, 308, 1023, 0, 100);
@@ -60,20 +55,28 @@ void OnDataRecv(uint8_t *mac, uint8_t *incomingDataBytes, uint8_t len) {
     digitalWrite(IN3, HIGH);
     digitalWrite(IN4, LOW);
     analogWrite(ENA2, speedThrottle);
+
+
   } else {
     // STOP
     digitalWrite(IN3, LOW);
     digitalWrite(IN4, LOW);
     analogWrite(ENA2, dutyCycle);
   }
-
-  if (potValue2 <= 512) {
+//
+//
+//
+//
+//
+  /*if (potValue2 <= 512) {
     // LEFT: Scale 0–512 to 0–100
     speedSteering = map(potValue2, 0, 512, 0, 100);
     // Motor A Left
     digitalWrite(IN1, LOW);
     digitalWrite(IN2, HIGH);
     analogWrite(ENA1, speedSteering);
+
+
   } else if (potValue2 >= 513) {
     // RIGHT: Scale 513–1023 to 0–100
     speedSteering = map(potValue2, 513, 1023, 0, 100);
@@ -87,6 +90,7 @@ void OnDataRecv(uint8_t *mac, uint8_t *incomingDataBytes, uint8_t len) {
     digitalWrite(IN2, LOW);
     analogWrite(ENA1, dutyCycle);
   }
+  */
 }
 
 
@@ -99,9 +103,7 @@ void setup() {
   pinMode(IN1, OUTPUT);
   pinMode(IN2, OUTPUT);
   analogWriteRange(100);
-  Serial.println("Hast Set Up ish");
 
-  
   WiFi.mode(WIFI_STA);
   WiFi.disconnect();
 
@@ -115,4 +117,5 @@ void setup() {
 }
 
 void loop() {
+  // Do nothing; data received via callback
 }

@@ -8,7 +8,11 @@
 // Import Libraries
 #include <ESP8266WiFi.h>
 #include <espnow.h>
+#include <Stepper.h>
+#define STEPS 100
 
+Stepper stepper(STEPS, D2, D3);
+int previous = 0;
 
 // Motor A
 int ENA1 = D0; // 16;
@@ -34,8 +38,8 @@ struct_message incomingData;
 
 void OnDataRecv(uint8_t *mac, uint8_t *incomingDataBytes, uint8_t len) {
   memcpy(&incomingData, incomingDataBytes, sizeof(incomingData));
-  int potValue1 = incomingData.potValue2;
-  int potValue2 = incomingData.potValue1;
+  int potValue1 = incomingData.potValue1;
+  int potValue2 = incomingData.potValue2;
 
   Serial.print("Received potValue1 (Throttle): ");
   Serial.print(potValue1);
@@ -68,25 +72,15 @@ void OnDataRecv(uint8_t *mac, uint8_t *incomingDataBytes, uint8_t len) {
   }
 
   if (potValue2 <= 512) {
-    // LEFT: Scale 0–512 to 0–100
-    speedSteering = map(potValue2, 0, 512, 0, 100);
-    // Motor A Left
-    digitalWrite(IN1, LOW);
-    digitalWrite(IN2, HIGH);
-    analogWrite(ENA1, speedSteering);
+    // LEFT: Scale 0–512 to -60-0
+    speedSteering = map(potValue2, 0, 512, -60, 0);
   } else if (potValue2 >= 513) {
-    // RIGHT: Scale 513–1023 to 0–100
-    speedSteering = map(potValue2, 513, 1023, 0, 100);
-    // Motor A Right
-    digitalWrite(IN1, HIGH);
-    digitalWrite(IN2, LOW);
-    analogWrite(ENA1, speedSteering);
-  } else {
-    // STOP
-    digitalWrite(IN1, LOW);
-    digitalWrite(IN2, LOW);
-    analogWrite(ENA1, dutyCycle);
+    // RIGHT: Scale 513–1023 to 0–60
+    speedSteering = map(potValue2, 513, 1023, 0, 60);
   }
+
+  stepper.step(speedSteering - previous);
+  previous = speedSteering;
 }
 
 
@@ -101,6 +95,7 @@ void setup() {
   analogWriteRange(100);
   Serial.println("Hast Set Up ish");
 
+  stepper.setSpeed(30);
   
   WiFi.mode(WIFI_STA);
   WiFi.disconnect();

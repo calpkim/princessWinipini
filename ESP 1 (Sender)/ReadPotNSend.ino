@@ -49,7 +49,7 @@ void setup() {
 }
 
 void loop() {
-  dataToSend.potValue2 = analogRead(A0); // Throttle pot on A0
+  dataToSend.potValue1 = analogRead(A0); // Throttle pot on A0
   //dataToSend.potValue2 = analogRead(A1); // Steering pot on A1 (example pin)
 
   esp_now_send(receiverMAC, (uint8_t *) &dataToSend, sizeof(dataToSend));
