@@ -34,10 +34,10 @@ typedef struct struct_message {
 
 struct_message dataToSend;
 
-const int throttleGND = D1;  // Used to ground throttle pot
-const int steeringGND = D2;  // Used to ground steering pot
-const int steeringVCC = D3; // Used to provide VCC to steering pot
-const int throttleVCC = D0; // Used to provide VCC to throttle pot
+const int throttleGND = D5;  // Used to ground throttle pot
+const int steeringGND = D6;  // Used to provide VCC to throttle pot
+const int steeringVCC = D7; // Used to provide VCC to steering pot
+const int throttleVCC = D8; // Used to provide VCC to throttle pot
 
 void setup() {
   Serial.begin(115200);
