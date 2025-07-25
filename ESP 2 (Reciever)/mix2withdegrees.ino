@@ -8,27 +8,25 @@
 // Import Libraries
 #include <ESP8266WiFi.h>
 #include <espnow.h>
-#include <Stepper.h>
-#define STEPS 100
 
-Stepper stepper(STEPS, D2, D3);
-int previous = 0;
+// Throttle
+int Tena = D2;
+int Tin1 = D3;
+int Tin2 = D4;
 
-// Motor A
-int ENA1 = D0; // 16;
-int IN1 = D1; // 5;
-int IN2 = D2; // 4;
-
-// Motor B
-int IN3 = D3; //0;
-int IN4 = D7; //13;
-int ENA2 = D8; //15;
+// Steering
+int Sin1 = D5; //0;
+int Sin2 = D6; //13;
+int Sin3 = D7; //15;
+int Sin4 = D8; //12;
 
 // Setting minimum duty cycle
 int dutyCycle = 0;
 
+const int stepsPerRevolution = 200; // 1.8° per step
+int currentStep = 0;
+int targetStep = 0;
 
-// 
 typedef struct struct_message {
   int potValue1; // Motor B, throttle
   int potValue2; // Motor A, steering
@@ -46,56 +44,80 @@ void OnDataRecv(uint8_t *mac, uint8_t *incomingDataBytes, uint8_t len) {
   Serial.print(" | potValue2 (Steering): ");
   Serial.println(potValue2);
 
-  int speedThrottle = 0;
-  int speedSteering = 0;
-
   if (potValue1 <= 307) {
     // REVERSE: Scale 0–307 to 0–30
     speedThrottle = map(potValue1, 0, 307, 0, 30);
 
-    // Motor B Reverse
-    digitalWrite(IN3, LOW);
-    digitalWrite(IN4, HIGH);
-    analogWrite(ENA2, speedThrottle);
+    // Motor A Reverse
+    digitalWrite(Tin1, LOW);
+    digitalWrite(Tin2, HIGH);
+    analogWrite(Tena, speedThrottle);
   } else if (potValue1 >= 308) {
     // FORWARD: Scale 308–1023 to 0–100
     speedThrottle = map(potValue1, 308, 1023, 0, 100);
-    // Motor B Forward
-    digitalWrite(IN3, HIGH);
-    digitalWrite(IN4, LOW);
-    analogWrite(ENA2, speedThrottle);
-  } else {
-    // STOP
-    digitalWrite(IN3, LOW);
-    digitalWrite(IN4, LOW);
-    analogWrite(ENA2, dutyCycle);
-  }
 
-  if (potValue2 <= 512) {
-    // LEFT: Scale 0–512 to -60-0
-    speedSteering = map(potValue2, 0, 512, -60, 0);
-  } else if (potValue2 >= 513) {
-    // RIGHT: Scale 513–1023 to 0–60
-    speedSteering = map(potValue2, 513, 1023, 0, 60);
+    // Motor A Forward
+    digitalWrite(Tin1, HIGH);
+    digitalWrite(Tin2, LOW);
+    analogWrite(Tena, speedThrottle);
   }
-
-  stepper.step(speedSteering - previous);
-  previous = speedSteering;
+  int angleSteering = map(potValue2, 0, 1023, 0, 360);
+  targetStep = map(angleSteering, 0, 360, 0, stepsPerRevolution);
+  
+  while (currentStep != targetStep) {
+    if (targetStep > currentStep) {
+      stepForward();
+      currentStep++;
+    } else if (targetStep < currentStep) {
+      stepBackward();
+      currentStep--;
+    }
+    delay(5); // Controls speed
+  }
 }
 
+void stepForward() {
+  static int step = 0;
+  step = (step + 1) % 4;
+  setStep(step);
+}
 
+void stepBackward() {
+  static int step = 0;
+  step = (step + 3) % 4; // (step - 1 + 4) % 4
+  setStep(step);
+}
+
+void setStep(int step) {
+  switch (step) {
+    case 0:
+      digitalWrite(Sin1, HIGH); digitalWrite(Sin2, LOW);
+      digitalWrite(Sin3, HIGH); digitalWrite(Sin4, LOW);
+      break;
+    case 1:
+      digitalWrite(Sin1, LOW); digitalWrite(Sin2, HIGH);
+      digitalWrite(Sin3, HIGH); digitalWrite(Sin4, LOW);
+      break;
+        case 2:
+      digitalWrite(Sin1, LOW); digitalWrite(Sin2, HIGH);
+      digitalWrite(Sin3, LOW); digitalWrite(Sin4, HIGH);
+      break;
+        case 3:
+      digitalWrite(Sin1, HIGH); digitalWrite(Sin2, LOW);
+      digitalWrite(Sin3, LOW); digitalWrite(Sin4, HIGH);
+      break;}
+}
 void setup() {
   Serial.begin(115200);
-  pinMode(ENA2, OUTPUT);
-  pinMode(IN3, OUTPUT);
-  pinMode(IN4, OUTPUT);
-  pinMode(ENA1, OUTPUT);
-  pinMode(IN1, OUTPUT);
-  pinMode(IN2, OUTPUT);
+  pinMode(Tena, OUTPUT);
+  pinMode(Tin1, OUTPUT);
+  pinMode(Tin2, OUTPUT);
+  pinMode(Sin1, OUTPUT);
+  pinMode(Sin2, OUTPUT);
+  pinMode(Sin3, OUTPUT);
+  pinMode(Sin4, OUTPUT);
   analogWriteRange(100);
   Serial.println("Hast Set Up ish");
-
-  stepper.setSpeed(30);
   
   WiFi.mode(WIFI_STA);
   WiFi.disconnect();
