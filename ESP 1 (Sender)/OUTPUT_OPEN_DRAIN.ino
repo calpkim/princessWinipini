@@ -15,8 +15,8 @@ typedef struct struct_message {
 
 struct_message dataToSend;
 
-const int throttle = GPIO4;  // Throttle pin
-const int steering = GPIO5;  // Steering pin
+const int throttle = D2;  // Throttle pin
+const int steering = D1;  // Steering pin
 
 void setup() {
   Serial.begin(115200);
