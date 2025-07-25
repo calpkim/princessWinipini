@@ -3,25 +3,6 @@
 // Created by calpkim & TitoSpike
 // ©2025
 
-//Chat GPT
-/*
-    const int switchPin = 2; // Example digital pin
-
-    void setup() {
-      pinMode(switchPin, INPUT);
-    }
-
-    void loop() {
-      int switchState = digitalRead(switchPin);
-      if (switchState == LOW) {
-        // Switch is closed (on)
-        // Do something when switch is on
-      } else {
-        // Switch is open (off)
-        // Do something when switch is off
-      }
-    }
-*/
 #include <ESP8266WiFi.h>
 #include <espnow.h>
 
@@ -34,28 +15,21 @@ typedef struct struct_message {
 
 struct_message dataToSend;
 
-const int throttleGND = D5;  // Used to ground throttle pot
-const int steeringGND = D6;  // Used to provide VCC to throttle pot
-const int steeringVCC = D7; // Used to provide VCC to steering pot
-const int throttleVCC = D8; // Used to provide VCC to throttle pot
+const int throttle = D2;  // Throttle pin
+const int steering = D1;  // Steering pin
 
 void setup() {
   Serial.begin(115200);
   WiFi.mode(WIFI_STA);  // ESP-NOW requires station mode
   WiFi.disconnect();    // ensure no connection to router
 
-  pinMode(throttleGND, INPUT);
-  pinMode(steeringGND, INPUT);
-  pinMode(steeringVCC, INPUT);
-  pinMode(throttleVCC, INPUT);
+  pinMode(throttle, INPUT); // Throttle 
+  pinMode(steering, INPUT); // Steering 
 
   if (esp_now_init() != 0) {
     Serial.println("ESP-NOW init failed");
     return;
   }
-// D0 is throttle positive (3v) and D1 is throttle negative (GND)
-// D3 is steering positive (3v) and D2 is steering negative (GND)
-//A0 is the analog input for both, have to on and off each port accordingly and read at the same time in order to read both simultaniously
 
   esp_now_set_self_role(ESP_NOW_ROLE_CONTROLLER);
   
@@ -63,39 +37,25 @@ void setup() {
 }
 
 void loop() {
+  // TURN OFF EVERYTHING
+  pinMode(throttle, INPUT);   // Make sure throttle is disconnected
+  pinMode(steering, INPUT);   // Make sure steering is disconnected
+
   // === Read Throttle ===
-  // TURN OFF STEERING
-  pinMode(steeringGND, INPUT);   // Make sure steering is disconnected
-  pinMode(steeringVCC, INPUT);  // Ensure steering VCC is off
-  // TURN ON THROTTLE
-  pinMode(throttleGND, OUTPUT);  // Set throttle GND to output
-  pinMode(throttleVCC, OUTPUT);  // Turn on throttle VCC
-  digitalWrite(throttleGND, LOW);    // Ground throttle
-  digitalWrite(throttleVCC, HIGH);   // Turn on Power for throttle
-  delay(50);                         // Wait for voltage to stabilize
-  // READ THROTTLE
-  dataToSend.potValue1 = analogRead(A0);
-  //TURN OFF THROTTLE
-  pinMode(throttleVCC, INPUT);  // Turn off throttle VCC
-  pinMode(throttleVCC, INPUT);  // Turn off throttle VCC
+  pinMode(throttle, OUTPUT_OPEN_DRAIN);  // Set throttle to open drain mode
+  digitalWrite(throttle, HIGH);
+  delay(100);
+  dataToSend.potValue1 = analogRead(A0); // Read throttle value
+  pinMode(throttle, INPUT);  // Turn off throttle
 
   // === Read Steering ===
-  // TURN OFF THROTTLE
-  pinMode(throttleGND, INPUT);   // Make sure throttle is disconnected
-  pinMode(throttleVCC, INPUT);  // Ensure throttle VCC is off
-  // TURN ON STEERING
-  pinMode(steeringGND, OUTPUT);  // Set steering GND to output
-  pinMode(steeringVCC, OUTPUT);  // Turn on steering VCC
-  digitalWrite(steeringGND, LOW);    // Ground steering
-  digitalWrite(steeringVCC, HIGH);   // Turn on Power for steering
-  delay(50);                         // Wait for voltage to stabilize
-  // READ STEERING
-  dataToSend.potValue2 = analogRead(A0);
-  //TURN OFF STEERING
-  pinMode(steeringGND, INPUT);   // Make sure steering is disconnected
-  pinMode(steeringVCC, INPUT);  // Ensure steering VCC is off
-
-    // === Print Data ===
+  pinMode(steering, OUTPUT_OPEN_DRAIN);  // Set steering to open drain mode
+  digitalWrite(steering, HIGH);
+  delay(100);
+  dataToSend.potValue2 = analogRead(A0); // Read steering value
+  pinMode(steering, INPUT);  // Turn off steering
+  
+  // === Print Data ===
   Serial.print("potValue1 = ");
   Serial.print(dataToSend.potValue1);
   Serial.print(" | potValue2 = ");
