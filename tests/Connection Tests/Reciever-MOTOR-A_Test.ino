@@ -1,4 +1,4 @@
-// /workspaces/princessWinipini/ESP 2 (Reciever)/mix.ino
+// /workspaces/princessWinipini/tests/Connection Tests/Reciever-MOTOR-A_Test.ino
 // princessWinipini Boat Project
 // Created by calpkim & TitoSpike
 // ©2025

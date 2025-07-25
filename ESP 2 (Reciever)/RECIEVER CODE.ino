@@ -1,4 +1,4 @@
-// /workspaces/princessWinipini/ESP 2 (Reciever)/mix.ino
+// /workspaces/princessWinipini/ESP 2 (Reciever)/RECIEVER CODE.ino
 // princessWinipini Boat Project
 // Created by calpkim & TitoSpike
 // ©2025

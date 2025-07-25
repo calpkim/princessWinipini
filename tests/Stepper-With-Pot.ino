@@ -1,3 +1,8 @@
+// /workspaces/princessWinipini/tests/Stepper-With-Pot.ino
+// princessWinipini Boat Project
+// Created by calpkim & TitoSpike
+// ©2025
+
 #define IN1 8
 #define IN2 9
 #define IN3 10

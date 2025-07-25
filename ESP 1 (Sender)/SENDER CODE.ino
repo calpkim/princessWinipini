@@ -1,4 +1,4 @@
-// /workspaces/princessWinipini/ESP 1 (Sender)/ReadPotNSend.ino
+// /workspaces/princessWinipini/ESP 1 (Sender)/SENDER CODE.ino
 // princessWinipini Boat Project
 // Created by calpkim & TitoSpike
 // ©2025
