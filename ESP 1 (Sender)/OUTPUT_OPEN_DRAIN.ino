@@ -43,12 +43,14 @@ void loop() {
 
   // === Read Throttle ===
   pinMode(throttle, OUTPUT_OPEN_DRAIN);  // Set throttle to open drain mode
+  digitalWrite(throttle, HIGH);
   delay(100);
   dataToSend.potValue1 = analogRead(A0); // Read throttle value
   pinMode(throttle, INPUT);  // Turn off throttle
 
   // === Read Steering ===
   pinMode(steering, OUTPUT_OPEN_DRAIN);  // Set steering to open drain mode
+  digitalWrite(steering, HIGH);
   delay(100);
   dataToSend.potValue2 = analogRead(A0); // Read steering value
   pinMode(steering, INPUT);  // Turn off steering
