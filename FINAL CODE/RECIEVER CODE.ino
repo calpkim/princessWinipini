@@ -49,8 +49,11 @@ void OnDataRecv(uint8_t *mac, uint8_t *incomingDataBytes, uint8_t len) {
   Serial.print(throttle);
   Serial.print(" | Steering: ");
   Serial.println(steering);*/
+  
 
+  
 }
+
 
 void setup() {
   Serial.begin(115200);
@@ -77,22 +80,26 @@ void setup() {
 }
 
 void loop() {
-  if (throttle <= 307) {
+  if (throttle <= 200) {
     // REVERSE: Scale 0–307 to 0–30
-    speedThrottle = map(throttle, 0, 307, 30, 0);
-
+    speedThrottle = map(throttle, 0, 200, 30, 1);
     // Motor A Reverse
     digitalWrite(Tin1, LOW);
     digitalWrite(Tin2, HIGH);
     analogWrite(Tena, speedThrottle);
-  } else if (throttle >= 308) {
+  } else if (throttle >= 400) {
     // FORWARD: Scale 308–1023 to 0–100
-    speedThrottle = map(throttle, 308, 1023, 0, 100);
+    speedThrottle = map(throttle, 400, 1023, 1, 100);
 
     // Motor A Forward
     digitalWrite(Tin1, HIGH);
     digitalWrite(Tin2, LOW);
     analogWrite(Tena, speedThrottle);
+  } else {
+    speedThrottle = 0;
+    digitalWrite(Tin1, LOW);
+    digitalWrite(Tin2, LOW);
+    digitalWrite(Tena, speedThrottle);
   }
   int angleSteering = map(steering, 0, 1023, 0, 360);
   targetStep = map(angleSteering, 0, 360, 0, stepsPerRevolution);
