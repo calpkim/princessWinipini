@@ -46,9 +46,9 @@ void OnDataRecv(uint8_t *mac, uint8_t *incomingDataBytes, uint8_t len) {
   Serial.println(incomingData.value);
 
   if (incomingData.type == 'T') {
-    int throttle = incomingData.value;
+    throttle = incomingData.value;
   } else if (incomingData.type == 'S') {
-    int steering = incomingData.value;
+    steering = incomingData.value;
   } else {
     Serial.println("El fin del mundo ha llegado! Salvase quien pueda!!!");
     return;
