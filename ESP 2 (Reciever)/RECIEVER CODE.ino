@@ -40,7 +40,10 @@ int steering = 0;
 
 void OnDataRecv(uint8_t *mac, uint8_t *incomingDataBytes, uint8_t len) {
   memcpy(&incomingData, incomingDataBytes, sizeof(incomingData));
-
+  Serial.print("Received data type: ");
+  Serial.print(incomingData.type);
+  Serial.print("Received data value: ");
+  Serial.println(incomingData.value);
 
   if (incomingData.type == 'T') {
     int throttle = incomingData.value;
@@ -55,6 +58,35 @@ void OnDataRecv(uint8_t *mac, uint8_t *incomingDataBytes, uint8_t len) {
   Serial.print(" | Steering: ");
   Serial.println(steering);
 
+  
+}
+
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(Tena, OUTPUT);
+  pinMode(Tin1, OUTPUT);
+  pinMode(Tin2, OUTPUT);
+  pinMode(Sin1, OUTPUT);
+  pinMode(Sin2, OUTPUT);
+  pinMode(Sin3, OUTPUT);
+  pinMode(Sin4, OUTPUT);
+  analogWriteRange(100);
+  Serial.println("Hast Set Up ish");
+  
+  WiFi.mode(WIFI_STA);
+  WiFi.disconnect();
+
+  if (esp_now_init() != 0) {
+    Serial.println("ESP-NOW init failed");
+    return;
+  }
+
+  esp_now_set_self_role(ESP_NOW_ROLE_SLAVE);
+  esp_now_register_recv_cb(OnDataRecv);
+}
+
+void loop() {
   if (throttle <= 307) {
     // REVERSE: Scale 0–307 to 0–30
     speedThrottle = map(throttle, 0, 307, 0, 30);
@@ -117,30 +149,4 @@ void setStep(int step) {
       digitalWrite(Sin1, HIGH); digitalWrite(Sin2, LOW);
       digitalWrite(Sin3, LOW); digitalWrite(Sin4, HIGH);
       break;}
-}
-void setup() {
-  Serial.begin(115200);
-  pinMode(Tena, OUTPUT);
-  pinMode(Tin1, OUTPUT);
-  pinMode(Tin2, OUTPUT);
-  pinMode(Sin1, OUTPUT);
-  pinMode(Sin2, OUTPUT);
-  pinMode(Sin3, OUTPUT);
-  pinMode(Sin4, OUTPUT);
-  analogWriteRange(100);
-  Serial.println("Hast Set Up ish");
-  
-  WiFi.mode(WIFI_STA);
-  WiFi.disconnect();
-
-  if (esp_now_init() != 0) {
-    Serial.println("ESP-NOW init failed");
-    return;
-  }
-
-  esp_now_set_self_role(ESP_NOW_ROLE_SLAVE);
-  esp_now_register_recv_cb(OnDataRecv);
-}
-
-void loop() {
 }
