@@ -26,42 +26,50 @@ int dutyCycle = 0;
 const int stepsPerRevolution = 200; // 1.8° per step
 int currentStep = 0;
 int targetStep = 0;
+int speedThrottle = 0;
 
 typedef struct struct_message {
-  int potValue1; // Motor B, throttle
-  int potValue2; // Motor A, steering
+  char type;
+  int steering;
+  int throttle;
 } struct_message;
 
 struct_message incomingData;
 
 void OnDataRecv(uint8_t *mac, uint8_t *incomingDataBytes, uint8_t len) {
   memcpy(&incomingData, incomingDataBytes, sizeof(incomingData));
-  int potValue1 = incomingData.potValue1;
-  int potValue2 = incomingData.potValue2;
 
-  Serial.print("Received potValue1 (Throttle): ");
-  Serial.print(potValue1);
-  Serial.print(" | potValue2 (Steering): ");
-  Serial.println(potValue2);
+  if (incomingData.type == 'T') {
+    int throttle = incomingData.throttle;
+  } else if (incomingData.type == 'S') {
+    int steering = incomingData.steering;
+  } else {
+    Serial.println("El fin del mundo ha llegado! Salvase quien pueda!!!");
+    return;
+  }
+  Serial.print("Received Throttle: ");
+  Serial.print(throttle);
+  Serial.print(" | Steering: ");
+  Serial.println(steering);
 
-  if (potValue1 <= 307) {
+  if (throttle <= 307) {
     // REVERSE: Scale 0–307 to 0–30
-    speedThrottle = map(potValue1, 0, 307, 0, 30);
+    speedThrottle = map(throttle, 0, 307, 0, 30);
 
     // Motor A Reverse
     digitalWrite(Tin1, LOW);
     digitalWrite(Tin2, HIGH);
     analogWrite(Tena, speedThrottle);
-  } else if (potValue1 >= 308) {
+  } else if (throttle >= 308) {
     // FORWARD: Scale 308–1023 to 0–100
-    speedThrottle = map(potValue1, 308, 1023, 0, 100);
+    speedThrottle = map(throttle, 308, 1023, 0, 100);
 
     // Motor A Forward
     digitalWrite(Tin1, HIGH);
     digitalWrite(Tin2, LOW);
     analogWrite(Tena, speedThrottle);
   }
-  int angleSteering = map(potValue2, 0, 1023, 0, 360);
+  int angleSteering = map(steering, 0, 1023, 0, 360);
   targetStep = map(angleSteering, 0, 360, 0, stepsPerRevolution);
   
   while (currentStep != targetStep) {
