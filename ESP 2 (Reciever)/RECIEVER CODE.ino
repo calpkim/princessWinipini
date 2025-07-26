@@ -89,7 +89,7 @@ void setup() {
 void loop() {
   if (throttle <= 307) {
     // REVERSE: Scale 0–307 to 0–30
-    speedThrottle = map(throttle, 0, 307, 0, 30);
+    speedThrottle = map(throttle, 0, 307, 30, 1);
 
     // Motor A Reverse
     digitalWrite(Tin1, LOW);
