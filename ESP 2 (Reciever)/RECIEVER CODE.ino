@@ -36,8 +36,12 @@ typedef struct struct_message {
 
 struct_message incomingData;
 
+int throttle = 0;
+int steering = 0;
+
 void OnDataRecv(uint8_t *mac, uint8_t *incomingDataBytes, uint8_t len) {
   memcpy(&incomingData, incomingDataBytes, sizeof(incomingData));
+
 
   if (incomingData.type == 'T') {
     int throttle = incomingData.throttle;

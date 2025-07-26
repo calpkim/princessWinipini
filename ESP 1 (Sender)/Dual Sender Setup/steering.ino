@@ -32,10 +32,10 @@ void setup() {
 
 void loop(){
     dataToSend.steering = analogRead(A0); // Read throttle value
-    dataToSend.type = S;
+    dataToSend.type = 'S';
 
 
-    Serial.print("Throttle Value: ");
+    Serial.print("Steering Value: ");
     Serial.println(dataToSend.steering);
 
     esp_now_send(receiverMAC, (uint8_t *) &dataToSend, sizeof(dataToSend));
