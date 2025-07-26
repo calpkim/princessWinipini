@@ -3,8 +3,6 @@
 // Created by calpkim & TitoSpike
 // ©2025
 
-//A work in advanced, this is GOING TO FAIL : )
-
 // Import Libraries
 #include <ESP8266WiFi.h>
 #include <espnow.h>
@@ -40,27 +38,19 @@ int steering = 0;
 
 void OnDataRecv(uint8_t *mac, uint8_t *incomingDataBytes, uint8_t len) {
   memcpy(&incomingData, incomingDataBytes, sizeof(incomingData));
-  /*Serial.print("Received data type: ");
-  Serial.print(incomingData.type);
-  Serial.print(" Received data value: ");
-  Serial.println(incomingData.value);*/
 
   if (incomingData.type == 'T') {
     throttle = incomingData.value;
   } else if (incomingData.type == 'S') {
     steering = incomingData.value;
-  } else {
-    Serial.println("El fin del mundo ha llegado! Salvase quien pueda!!!");
-    return;
   }
-  Serial.print("Received Throttle: ");
+  
+  /*Serial.print("Received Throttle: ");
   Serial.print(throttle);
   Serial.print(" | Steering: ");
-  Serial.println(steering);
+  Serial.println(steering);*/
 
-  
 }
-
 
 void setup() {
   Serial.begin(115200);
@@ -89,7 +79,7 @@ void setup() {
 void loop() {
   if (throttle <= 307) {
     // REVERSE: Scale 0–307 to 0–30
-    speedThrottle = map(throttle, 0, 307, 30, 1);
+    speedThrottle = map(throttle, 0, 307, 30, 0);
 
     // Motor A Reverse
     digitalWrite(Tin1, LOW);
@@ -107,15 +97,17 @@ void loop() {
   int angleSteering = map(steering, 0, 1023, 0, 360);
   targetStep = map(angleSteering, 0, 360, 0, stepsPerRevolution);
   
-  while (currentStep != targetStep) {
+  if (abs(targetStep - currentStep) < 5) {
+
+  } else {
     if (targetStep > currentStep) {
-      stepForward();
-      currentStep++;
+    stepForward();
+    currentStep++;
     } else if (targetStep < currentStep) {
-      stepBackward();
-      currentStep--;
+    stepBackward();
+    currentStep--;
     }
-    delay(5); // Controls speed
+  delay(5); // Controls speed
   }
 }
 
