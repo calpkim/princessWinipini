@@ -30,8 +30,7 @@ int speedThrottle = 0;
 
 typedef struct struct_message {
   char type;
-  int steering;
-  int throttle;
+  int value;
 } struct_message;
 
 struct_message incomingData;
@@ -44,9 +43,9 @@ void OnDataRecv(uint8_t *mac, uint8_t *incomingDataBytes, uint8_t len) {
 
 
   if (incomingData.type == 'T') {
-    int throttle = incomingData.throttle;
+    int throttle = incomingData.value;
   } else if (incomingData.type == 'S') {
-    int steering = incomingData.steering;
+    int steering = incomingData.value;
   } else {
     Serial.println("El fin del mundo ha llegado! Salvase quien pueda!!!");
     return;

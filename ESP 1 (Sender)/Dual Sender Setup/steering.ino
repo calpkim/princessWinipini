@@ -9,7 +9,7 @@
 uint8_t receiverMAC[] = {0x48, 0x3F, 0xDA, 0x57, 0x55, 0x5B};
 typedef struct struct_message {
     char type;
-    int steering;
+    int value;
 } struct_message;
 
 struct_message dataToSend;
@@ -31,12 +31,12 @@ void setup() {
 }
 
 void loop(){
-    dataToSend.steering = analogRead(A0); // Read throttle value
+    dataToSend.value = analogRead(A0); // Read throttle value
     dataToSend.type = 'S';
 
 
     Serial.print("Steering Value: ");
-    Serial.println(dataToSend.steering);
+    Serial.println(dataToSend.value);
 
     esp_now_send(receiverMAC, (uint8_t *) &dataToSend, sizeof(dataToSend));
 }
