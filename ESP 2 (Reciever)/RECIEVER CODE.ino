@@ -42,7 +42,7 @@ void OnDataRecv(uint8_t *mac, uint8_t *incomingDataBytes, uint8_t len) {
   memcpy(&incomingData, incomingDataBytes, sizeof(incomingData));
   Serial.print("Received data type: ");
   Serial.print(incomingData.type);
-  Serial.print("Received data value: ");
+  Serial.print(" Received data value: ");
   Serial.println(incomingData.value);
 
   if (incomingData.type == 'T') {
