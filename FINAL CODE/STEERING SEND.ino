@@ -6,7 +6,7 @@
 #include <ESP8266WiFi.h>
 #include <espnow.h>
 
-uint8_t receiverMAC[] = {0x48, 0x3F, 0xDA, 0x57, 0x55, 0x5B};
+uint8_t receiverMAC[] = {0x48, 0x55, 0x19, 0xC8, 0xD0, 0x4B};
 typedef struct struct_message {
     char type;
     int value;
@@ -31,7 +31,8 @@ void setup() {
 }
 
 void loop(){
-    dataToSend.value = analogRead(A0); // Read throttle value
+    int data = analogRead(A0); // Read throttle value
+    dataToSend.value = map(data, 0, 1023, 200, 800); //
     dataToSend.type = 'S';
 
 

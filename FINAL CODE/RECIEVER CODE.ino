@@ -45,10 +45,10 @@ void OnDataRecv(uint8_t *mac, uint8_t *incomingDataBytes, uint8_t len) {
     steering = incomingData.value;
   }
   
-  /*Serial.print("Received Throttle: ");
-  Serial.print(throttle);
-  Serial.print(" | Steering: ");
-  Serial.println(steering);*/
+  //Serial.print("Received Throttle: ");
+  //Serial.print(throttle);
+  //Serial.print(" | Steering: ");
+  //Serial.println(steering);
   
 
   
