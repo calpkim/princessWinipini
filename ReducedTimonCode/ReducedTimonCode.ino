@@ -1,5 +1,5 @@
 #include <Stepper.h>
-const int receiverPin = 11;
+const int receiverPin = 3;
 volatile unsigned long pulseStart = 0;
 volatile unsigned long pulseWidth = 0;
 int currentStep = 0;
@@ -16,10 +16,12 @@ void setup() {
 
 void loop() {
     targetStep = map(pulseWidth, 996, 1996, 0, 50);
-    if (-5 < targetStep - currentStep < 5) {
+    if (abs(targetStep - currentStep) < 5) {
+        Serial.print("no");
     } else {
     mystepper.step(targetStep - currentStep);
     currentStep = targetStep;
+    Serial.print("yes");
     }
     Serial.print(targetStep);
     Serial.print("             ");
