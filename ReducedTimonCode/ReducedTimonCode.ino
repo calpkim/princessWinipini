@@ -16,7 +16,7 @@ void setup() {
 
 void loop() {
     targetStep = map(pulseWidth, 996, 1996, 0, 50);
-    mystepper.step(5000);
+    mystepper.step(targetStep - currentStep);
     currentStep = targetStep;
     Serial.print(targetStep);
     Serial.print("             ");
