@@ -59,15 +59,15 @@ void readPulse() {
 }
 
 void stepForward() {
-  static int step = 0;
+/*  static int step = 0;
   step = (step + 1) % 4;
   setStep(step);
+  */
+  setStep(currentStep % 4);
 }
 
 void stepBackward() {
-  static int step = 0;
-  step = (step + 3) % 4; // (step - 1 + 4) % 4
-  setStep(step);
+  setStep(currentStep % 4);
 }
 
 void setStep(int step) {
@@ -80,12 +80,13 @@ void setStep(int step) {
       digitalWrite(Sin1, LOW); digitalWrite(Sin2, HIGH);
       digitalWrite(Sin3, HIGH); digitalWrite(Sin4, LOW);
       break;
-        case 2:
+    case 2:
       digitalWrite(Sin1, LOW); digitalWrite(Sin2, HIGH);
       digitalWrite(Sin3, LOW); digitalWrite(Sin4, HIGH);
       break;
-        case 3:
+    case 3:
       digitalWrite(Sin1, HIGH); digitalWrite(Sin2, LOW);
       digitalWrite(Sin3, LOW); digitalWrite(Sin4, HIGH);
-      break;}
+      break;
+  }
 }
