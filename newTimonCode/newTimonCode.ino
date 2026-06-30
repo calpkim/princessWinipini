@@ -38,14 +38,15 @@ void loop() {
     if (abs(targetStep - currentStep) < 5) {
 
     } else {
-        if (targetStep > currentStep) {
-        stepForward();
-        currentStep++;
-        } else if (targetStep < currentStep) {
-        stepBackward();
-        currentStep--;
-        }
-    //delay(5); // Controls speed
+      while (currentStep != targetStep) {
+          if (targetStep > currentStep) {
+          stepForward();
+          currentStep++;
+          } else if (targetStep < currentStep) {
+          stepBackward();
+          currentStep--;
+          }
+      delay(5); // Controls speed
     }
 //    delay(100); 
 }
