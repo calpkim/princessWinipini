@@ -38,7 +38,7 @@ void loop() {
     if (abs(targetStep - currentStep) < 5) {
 
     } else {
-      while (currentStep != targetStep) {
+        //while (currentStep != targetStep) {
           if (targetStep > currentStep) {
           stepForward();
           currentStep++;
@@ -46,7 +46,8 @@ void loop() {
           stepBackward();
           currentStep--;
           }
-      delay(5); // Controls speed
+        //delay(5); // Controls speed
+        //}
     }
 //    delay(100); 
 }
