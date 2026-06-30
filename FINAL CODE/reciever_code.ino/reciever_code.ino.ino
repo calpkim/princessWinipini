@@ -103,7 +103,7 @@ void loop() {
   }
   int angleSteering = map(steering, 0, 1023, 0, 360);
   targetStep = map(angleSteering, 0, 360, 0, stepsPerRevolution);
-  
+  Serial.println(targetStep);
   if (abs(targetStep - currentStep) < 5) {
 
   } else {

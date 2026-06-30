@@ -2,10 +2,10 @@
 const int receiverPin = 2;
 volatile unsigned long pulseStart = 0;
 volatile unsigned long pulseWidth = 0;
-int Sin1 = D5; //0;
-int Sin2 = D6; //13;
-int Sin3 = D7; //15;
-int Sin4 = D8; //12;
+int Sin1 = 5; //0;
+int Sin2 = 6; //13;
+int Sin3 = 7; //15;
+int Sin4 = 8; //12;
 int dutyCycle = 0;
 const int stepsPerRevolution = 200; // 1.8° per step
 int currentStep = 0;
@@ -19,22 +19,22 @@ void setup() {
     pinMode(Sin2, OUTPUT);
     pinMode(Sin3, OUTPUT);
     pinMode(Sin4, OUTPUT);
-    analogWriteRange(100);
+//    analogWriteRange(100);
     Serial.begin(9600);
     attachInterrupt(digitalPinToInterrupt(receiverPin), readPulse, CHANGE);
     Serial.println("Hast Set Up ish");
 }
 
 void loop() {
-    Serial.print("PulseWidth               ");
-    Serial.println(pulseWidth);
+ //   Serial.print("PulseWidth               ");
+ //   Serial.println(steering);
  //   Serial.println("us");
     
  
-    steering = pulseWidth;
+    steering = (pulseWidth + 8)/10 * 10;
     int angleSteering = map(steering, 996, 1996, 0, 360);
     targetStep = map(angleSteering, 0, 360, 0, stepsPerRevolution);
-    
+    Serial.println(targetStep);
     if (abs(targetStep - currentStep) < 5) {
 
     } else {
@@ -45,8 +45,9 @@ void loop() {
         stepBackward();
         currentStep--;
         }
-    delay(5); // Controls speed
-    } 
+    //delay(5); // Controls speed
+    }
+    delay(100); 
 }
 
 void readPulse() {
