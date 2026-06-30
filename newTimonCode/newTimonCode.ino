@@ -10,9 +10,9 @@ void setup() {
 }
 
 void loop() {
-    Serial.print("PulseWidth");
-    Serial.print(pulseWidth);
-    Serial.println("us");
+    Serial.print("PulseWidth               ");
+    Serial.println(pulseWidth);
+ //   Serial.println("us");
     delay(100);
 }
 
