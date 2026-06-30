@@ -47,7 +47,7 @@ void loop() {
         }
     //delay(5); // Controls speed
     }
-    delay(100); 
+//    delay(100); 
 }
 
 void readPulse() {
