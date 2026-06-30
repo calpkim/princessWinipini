@@ -29,7 +29,8 @@ void setup() {
 }
 
 void loop() {
-  int angleSteering = map(steering, 0, 1023, 0, 360);
+  steering = pulseWidth;
+  int angleSteering = map(steering, 996, 1996, 0, 360);
   targetStep = map(angleSteering, 0, 360, 0, stepsPerRevolution);
   
   if (abs(targetStep - currentStep) < 5) {
