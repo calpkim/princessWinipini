@@ -15,7 +15,7 @@ int currentStep = 0;
 int targetStep = 0;
 int steering = 0;
 
-int returnCoutner = 0;
+int returnCounter = 0;
 
 void setup() {
   pinMode(receiverPin, INPUT);
@@ -29,25 +29,37 @@ void setup() {
 }
 
 void loop() {
+  
   targetStep = map(pulseWidth, 1000, 2000, 0, 150);
-  if (abs(targetStep - currentStep) < 5) {
-  } else {
+
+  if ((abs(targetStep - currentStep) < 5) && (returnCounter == 0)) {
+  } else if ((abs(targetStep - currentStep < 5) && (returnCounter > 0)) {
     if (targetStep > currentStep) {
-    stepForward();
-    currentStep++;
+      stepForward();
+      currentStep++;
     } else if (targetStep < currentStep) {
-    stepBackward();
-    currentStep--;
+      stepBackward();
+      currentStep--;
     }
-    
-  //delay(5);
+    returnCoutner--;
+  } else {
+      if (targetStep > currentStep) {
+        stepForward();
+        currentStep++;
+      } else if (targetStep < currentStep) {
+        stepBackward();
+        currentStep--;
+      }
+    returnCounter = 4;
   }
+    
   Serial.print("             TargetStep");
   Serial.print(targetStep);
   Serial.print("             PulseWidth");
   Serial.print(pulseWidth);
   Serial.print("             CurrentStep");
   Serial.println(currentStep);
+
 }
 
 ICACHE_RAM_ATTR void readPulse() {
