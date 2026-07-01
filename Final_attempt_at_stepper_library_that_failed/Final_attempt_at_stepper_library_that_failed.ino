@@ -1,7 +1,7 @@
-#include <Stepper.h>
+// Read PWM signals from FS-iA6B using Arduino Uno
 #include <espnow.h>
-
-const int receiverPin = D3;
+#include <Stepper.h>
+const int receiverPin = D2;
 volatile unsigned long pulseStart = 0;
 volatile unsigned long pulseWidth = 0;
 long currentStep = 0;
@@ -10,37 +10,30 @@ const int stepsPerRevolution = 200;
 Stepper mystepper(stepsPerRevolution, D5, D6, D7, D8);
 
 void setup() {
-    Serial.begin(115200);
     pinMode(receiverPin, INPUT);
-    mystepper.setSpeed(30);
+    Serial.begin(115200);
     attachInterrupt(digitalPinToInterrupt(receiverPin), readPulse, CHANGE);
 }
 
 void loop() {
-
-    /*mystepper.step(1);
-    delay(50);
-    Serial.println(".");
-    return;
-    mystepper.step(-300);
-    return;
-    */
-    targetStep = map(pulseWidth, 50, 5000, 0, 50);
+    targetStep = map(pulseWidth, 1000, 2000, 0, 200);
     if (abs(targetStep - currentStep) < 5) {
-        Serial.print("no       TargetStep");
+        Serial.println("no");
     } else {
         int difference = targetStep - currentStep;
         Serial.print("Moving steps: "); Serial.println(difference);
         mystepper.step(difference);
         currentStep = targetStep;
-        Serial.print("Done       TargetStep");
+        Serial.println("Done");
     }
+    
+    Serial.print("TargetStep");
     Serial.print(targetStep);
-    Serial.print("             PulseWidth");
-    Serial.print(pulseWidth);
-    Serial.print("             CurrentStep");
-    Serial.println(currentStep);
-    delay(100);
+    Serial.print("    CurrentStep    ");
+    Serial.print(currentStep);
+    Serial.print("    PulseWidth    ");
+    Serial.println(pulseWidth);
+    delay(1000);
 }
 
 ICACHE_RAM_ATTR void readPulse() {
@@ -49,5 +42,4 @@ ICACHE_RAM_ATTR void readPulse() {
     } else{
         pulseWidth = micros() - pulseStart;
     }
-    //Serial.println("hmm");
 }

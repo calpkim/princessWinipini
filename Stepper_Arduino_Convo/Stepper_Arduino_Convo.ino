@@ -1,11 +1,12 @@
 // Read PWM signals from FS-iA6B using Arduino Uno
-const int receiverPin = 2;
+#include <espnow.h>
+const int receiverPin = D2;
 volatile unsigned long pulseStart = 0;
 volatile unsigned long pulseWidth = 0;
 
 void setup() {
     pinMode(receiverPin, INPUT);
-    Serial.begin(9600);
+    Serial.begin(115200);
     attachInterrupt(digitalPinToInterrupt(receiverPin), readPulse, CHANGE);
 }
 
@@ -16,7 +17,7 @@ void loop() {
     delay(100);
 }
 
-void readPulse() {
+ICACHE_RAM_ATTR void readPulse() {
     if (digitalRead(receiverPin)==HIGH) {
         pulseStart = micros();
     } else{
