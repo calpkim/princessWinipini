@@ -41,7 +41,7 @@ void loop() {
       stepBackward();
       currentStep--;
     }
-    returnCoutner--;
+    returnCounter--;
   } else {
       if (targetStep > currentStep) {
         stepForward();
