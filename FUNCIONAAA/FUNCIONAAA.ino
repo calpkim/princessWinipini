@@ -14,6 +14,7 @@ const int stepsPerRevolution = 200;
 int currentStep = 0;
 int targetStep = 0;
 int steering = 0;
+int rogueSignalCount;
 
 int returnCounter = 0;
 
@@ -29,37 +30,50 @@ void setup() {
 }
 
 void loop() {
-  
-  targetStep = map(pulseWidth, 1000, 2000, 0, 150);
-
-  if ((abs(targetStep - currentStep) < 5) && (returnCounter == 0)) {
-  } else if ((abs(targetStep - currentStep < 5) && (returnCounter > 0)) {
-    if (targetStep > currentStep) {
-      stepForward();
-      currentStep++;
-    } else if (targetStep < currentStep) {
-      stepBackward();
-      currentStep--;
-    }
-    returnCounter--;
+  if (900 < pulseWidth && pulseWidth < 2100) {
+    targetStep = map(pulseWidth, 1000, 2000, 0, 100);
+  } else if (pulseWidth < 900 || pulseWidth > 2100) {
+    Serial.println("Rogue Signal Detected");
+    rogueSignalCount++;
   } else {
-      if (targetStep > currentStep) {
-        stepForward();
-        currentStep++;
-      } else if (targetStep < currentStep) {
-        stepBackward();
-        currentStep--;
-      }
-    returnCounter = 4;
+    Serial.println("Umm");
   }
-    
-  Serial.print("             TargetStep");
-  Serial.print(targetStep);
+  // if ((abs(targetStep - currentStep) < 5) && (returnCounter == 0)) {
+  // } else if ((abs(targetStep - currentStep < 5)) && (returnCounter > 0)) {
+  //   if (targetStep > currentStep) {
+  //     stepForward();
+  //     currentStep++;
+  //   } else if (targetStep < currentStep) {
+  //     stepBackward();
+  //     currentStep--;
+  //   }
+  //   returnCounter--;
+  // } else {
+  //     if (targetStep > currentStep) {
+  //       stepForward();
+  //       currentStep++;
+  //     } else if (targetStep < currentStep) {
+  //       stepBackward();
+  //       currentStep--;
+  //     }
+  //   returnCounter = 4;
+  // }
+  
+  if (targetStep > currentStep) {
+    stepForward();
+    currentStep++;
+  } else if (targetStep < currentStep) {
+    stepBackward();
+    currentStep--;
+  }
   Serial.print("             PulseWidth");
   Serial.print(pulseWidth);
+  Serial.print("             TargetStep");
+  Serial.print(targetStep);
   Serial.print("             CurrentStep");
-  Serial.println(currentStep);
-
+  Serial.print(currentStep);
+  Serial.print("             rogueSignalCount");
+  Serial.println(rogueSignalCount);
 }
 
 ICACHE_RAM_ATTR void readPulse() {
